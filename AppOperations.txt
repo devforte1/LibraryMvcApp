@@ -1,0 +1,18 @@
+View Media Inventory.
+
+View User Profile.
+	Checked out media items.
+	Checkout History.
+
+Check In/Out Media.
+	Select Delivery Method.
+
+Change Password.
+
+Librarian:
+	Add Media Inventory.
+	Update Media Item Quantity.
+	Archive Media Item.
+	Disable User.
+
+
