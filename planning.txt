@@ -1,16 +1,23 @@
 1. List roles:
+
 Administrator, Librarian, Patron, Guest.
 
 2. List views:
+
 Home page view.
 Administrator menu view.
 Librarian menu view.
 Patron menu view.
 Guest menu view.
-Media inventory view.
+Media inventory list view.
+Media inventory add item view.
 Check out media item view.
+Extend media item checkout view.
 Check in media item view.
+Media inventory update item view.
+Media inventory archive item view.
 User profile view.
+Disable user view.
 Roles list view.
 Users list view.
 Change password view.
@@ -18,11 +25,13 @@ Register user view.
 Login user view.
 
 3. Roles to views relationship:
+
 Administrator:
 Home page view.
 Administrator menu view.
 Media inventory view.
 Login user view.
+Disable user view.
 User profile view.
 Change password view.
 Roles list view.
@@ -33,7 +42,10 @@ Librarian:
 Home page view.
 Librarian menu view.
 Check in media item view.
-Media inventory view.
+Media inventory list view.
+Media inventory add item view.
+Media inventory update item view.
+Media inventory archive item view.
 Login user view.
 Change password view.
 User profile view.
@@ -42,8 +54,9 @@ Users list view.
 Patron:
 Home page view.
 Patron menu view.
-Media inventory view.
+Media inventory list view.
 Check out media item view.
+Extend media item checkout view.
 Login user view.
 User profile view.
 Change password view.
@@ -52,7 +65,7 @@ Request new media item view.
 Guest:
 Home page view.
 Register user view.
-Media inventory view.
+Media inventory list view.
 
 
 
