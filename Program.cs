@@ -9,6 +9,13 @@ using System.Threading.Tasks;
 
 namespace LibraryMvcApp
 {
+
+    // TODO: Complete Roles Controller, View.
+    // TODO: Complete Media query/View.
+    // TODO: Create Media search.
+    // TODO: Create Operations, DAL unit tests.
+    // TODO: Complete static navigation flow.
+    // TODO: Complete dynamic menu rendering by role feature.
     public class Program
     {
         public static void Main(string[] args)

@@ -1,0 +1,49 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model LibraryMvcApp.Models.RegistrantModel
+@{
+    ViewBag.Title = "Registration";
+    bool disableButtonFlag = false;
+}
+
+<h2>Registration Page</h2>
+
+@if (ViewBag.Message!=null)
+{
+    disableButtonFlag = true;
+    if (ViewBag.Message.Contains("Welcome"))
+    {
+        <div class="message success"><h4 class="success">@ViewBag.Message</h4></div>
+         disableButtonFlag = true;
+    }
+    else
+    {
+        <div class="message error"><h4 class="error">@ViewBag.Message</h4></div>
+    }
+}
+
+<div class="container-sm">
+    @using (Html.BeginForm("Index","Registration"))
+    {
+        <form>
+            <div class="form-group">
+                <label for="username">User Name</label>
+                @Html.TextBoxFor(model => model.UserName, new { @class="form-control", @placeholder="Enter a User Name:"})
+                @Html.ValidationMessageFor(model => model.UserName, "", new {@class = "alert-danger"})
+            </div>
+            <div class="form-group">
+                <label for="password">User Name</label>
+                @Html.TextBoxFor(model => model.Password, new { @class="form-control", @placeholder="Enter a Password:"})
+                @Html.ValidationMessageFor(model => model.Password, "", new {@class = "alert-danger"})
+            </div>
+
+            <div>
+                <input type="submit" value="Register" class="btn btn-primary" disabled="@(disableButtonFlag ? "disabled" : null)"/>
+                <input type="reset" value="Clear" class="btn btn-primary" disabled="@(disableButtonFlag ? "disabled" : null)" />
+            </div>
+        </form>
+    }
+</div>
+
+

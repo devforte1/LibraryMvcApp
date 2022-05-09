@@ -1,91 +1,65 @@
-﻿using System.Text.Encodings.Web;
+﻿
+using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+
+
+using LibraryBLL;
+using LibraryCommon;
+using LibraryMvcApp.Models;
 
 namespace LibraryMvcApp.Controllers
 {
     public class RegistrationController : Controller
     {
+        private readonly ILogger<RegistrationController> _logger;
+
+        public RegistrationController(ILogger<RegistrationController> logger)
+        {
+            _logger = logger;
+        }
+        
         // GET: RegistrationController
-        //public ActionResult Index()
-        //{
-        //    return View();
-        //}
-
-        // GET: RegistrationController
-        public string Index()
-        {
-            return "Registration Index() method return.";
-        }
-
-        // GET: RegistrationController/Details/5
-        //public ActionResult Details(int id)
-        //{
-        //    return View();
-        //}
-        public string Details(int id=0, string name="HiThere", int numTimes=1)
-        {
-            return HtmlEncoder.Default.Encode($"Registration Details() method return {id}, {name}, {numTimes}.");
-        }
-
-        // GET: RegistrationController/Create
-        public ActionResult Create()
+        [HttpGet]
+        public IActionResult Index()
         {
             return View();
         }
 
-        // POST: RegistrationController/Create
+        // POST: RegistrationController
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public IActionResult Index(RegistrantModel model)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
+                // RegistrantDAL db = new RegistrantDAL();
+                UserOperations userOperations = new UserOperations();
+
+                // Instantiate Registrant object from BLL.
+                ViewBag.UserName = model.UserName;
+                ViewBag.Password = model.Password;
+                RegistrantDTO registrant = new RegistrantDTO(model.UserName, model.Password);
+
+                bool result = userOperations.InsertUser(registrant);
+                if (result)
+                {
+                    ViewBag.Message = $"Welcome, Registrant '{ViewBag.UserName}'.";
+                }
+                else
+                {
+                    ViewBag.Message = $"Unable to register '{ViewBag.UserName}'. Please contact the system administrator.";
+                }
+
                 return View();
+                // return RedirectToPage("/Register");
             }
-        }
-
-        // GET: RegistrationController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: RegistrationController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: RegistrationController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: RegistrationController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
+            else
             {
                 return View();
             }

@@ -1,0 +1,22 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model LibraryMvcApp.Models.RegistrantModel
+@{
+    ViewBag.Title = "Roles";
+}
+
+<h2>Roles Page</h2>
+
+<div class="container-sm">
+    <table id="RoleList" border="1" cellpadding="10">
+    <tr>
+        <thead>Role ID&nbsp;</thead>
+        <thead>&nbsp;Role Name</thead>
+    </tr>
+    @foreach(RoleModel role in ViewBag.Roles)
+    {
+        <tr><td width="60">@role.RoleId</td><td>@role.Name</td></tr>
+    }
+    </table>
+</div>

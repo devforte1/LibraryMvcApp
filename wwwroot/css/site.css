@@ -51,6 +51,26 @@ button.accept-policy {
   line-height: inherit;
 }
 
+tr:nth-child(even) {
+    background-color: #D6EEEE
+}
+
+tr {
+    border-bottom: 1px solid #ddd;
+}
+
+thead{
+    text-align: center;
+}
+
+.error h4 {
+    color: red;
+}
+
+.success h4 {
+    color: green;
+}
+
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
