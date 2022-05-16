@@ -19,6 +19,13 @@ namespace LibraryMvcApp.Controllers
     public class RegistrationController : Controller
     {
         private readonly ILogger<RegistrationController> _logger;
+        //private enum _role
+        //{
+        //    Guest =17,
+        //    Administrator = 18,
+        //    Librarian = 19,
+        //    Patron =20
+        //}
 
         public RegistrationController(ILogger<RegistrationController> logger)
         {
@@ -36,24 +43,30 @@ namespace LibraryMvcApp.Controllers
         [HttpPost]
         public IActionResult Index(RegistrantModel model)
         {
+            if (String.IsNullOrEmpty(HttpContext.Session.GetString("IsAuthenticated")))
+            {
+                HttpContext.Session.SetString("IsAuthenticated", "false");
+            }
+
             if (ModelState.IsValid)
             {
                 // RegistrantDAL db = new RegistrantDAL();
                 UserOperations userOperations = new UserOperations();
 
                 // Instantiate Registrant object from BLL.
-                ViewBag.UserName = model.UserName;
-                ViewBag.Password = model.Password;
-                RegistrantDTO registrant = new RegistrantDTO(model.UserName, model.Password);
+                RegistrantDTO registrant = new RegistrantDTO(model.UserName, model.Password, model.FirstName, model.LastName, model.Email);
 
                 bool result = userOperations.InsertUser(registrant);
                 if (result)
                 {
-                    ViewBag.Message = $"Welcome, Registrant '{ViewBag.UserName}'.";
+                    UserDTO user = userOperations.GetUserByUserName(model.UserName);
+                    
+                    // userOperations.SetUserRole(user.UserId,(int)_role.Patron);
+                    ViewBag.Message = $"Welcome, Registrant '{model.UserName}'. Please log in to access your dashboard.";
                 }
                 else
                 {
-                    ViewBag.Message = $"Unable to register '{ViewBag.UserName}'. Please contact the system administrator.";
+                    ViewBag.Message = $"Unable to register '{model.UserName}'. Please contact the system administrator.";
                 }
 
                 return View();

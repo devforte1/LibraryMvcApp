@@ -17,9 +17,39 @@ namespace LibraryMvcApp.Controllers
     public class UserController : Controller
     {
         // GET: UserController
-        public ActionResult Index()
+        [HttpGet]
+        public ActionResult GetUsers()
         {
-            return View();
+
+            //if (String.IsNullOrEmpty(HttpContext.Session.GetString("IsAuthenticated")))
+            //{
+            //    HttpContext.Session.SetString("IsAuthenticated", "false");
+            //}
+
+            UserOperations userOperations = new UserOperations();
+            List<UserDTO> userDtoList = new List<UserDTO>();
+            List<UserModel> userModels = new List<UserModel>();
+
+            userDtoList = userOperations.GetUsers();
+
+            ModelState.Clear();
+
+            foreach (UserDTO item in userDtoList)
+            {
+                UserModel model = new UserModel();
+
+                model.UserId = item.UserId;
+                model.UserName = item.UserName;
+                model.Password = item.Password;
+                model.IsActive = item.IsActive;
+                model.RoleName = item.RoleName;
+                model.FirstName = item.FirstName;
+                model.LastName = item.LastName;
+                model.Email = item.Email;
+                userModels.Add(model);
+            }
+
+            return View(userModels);
         }
 
         // GET: UserController/Details/5
@@ -37,58 +67,115 @@ namespace LibraryMvcApp.Controllers
         // POST: UserController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(UserModel model)
         {
-            try
+            if (String.IsNullOrEmpty(HttpContext.Session.GetString("IsAuthenticated")))
             {
-                return RedirectToAction(nameof(Index));
+                HttpContext.Session.SetString("IsAuthenticated", "false");
             }
-            catch
+
+            if (ModelState.IsValid)
+            {
+                // RegistrantDAL db = new RegistrantDAL();
+                UserOperations userOperations = new UserOperations();
+
+                // Instantiate Registrant object from BLL.
+                UserDTO user = new UserDTO(model.UserName, model.Password, model.IsActive.ToString(), model.RoleName, model.FirstName, model.LastName, model.Email, model.UserId);
+
+                return View();
+                // return RedirectToPage("/Register");
+            }
+            else
             {
                 return View();
             }
         }
 
-        // GET: UserController/Edit/5
-        public ActionResult Edit(int id)
+        // GET: UserController/UpdateUser/5
+        public ActionResult UpdateUser(int id)
         {
-            return View();
+            UserOperations userOperations = new UserOperations();
+            UserDTO userDto = userOperations.GetUsers().Find(item => item.UserId == id);
+
+            //bool result = userOperations.UpdateUser(userDto);
+
+            if (userDto is not null)
+            {
+                UserModel userModel = new UserModel();
+                userModel.UserId = userDto.UserId;
+                userModel.UserName = userDto.UserName;
+                userModel.Password = userDto.Password;
+                userModel.IsActive = userDto.IsActive;
+                userModel.RoleName = userDto.RoleName;
+                userModel.FirstName = userDto.FirstName;
+                userModel.LastName = userDto.LastName;
+                userModel.Email = userDto.Email;
+
+                return View(userModel);
+                //    // return View(mediaOperations.GetInventory().Find(mediaModel => model.MediaId == id));
+                //}
+                //else
+                //{
+                //    return View();
+                //}
+            }
+            else
+            {
+                return View();
+            }
         }
 
-        // POST: UserController/Edit/5
+        // POST: UserController/UpdateUser/<UserName>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult UpdateUser(string userName)
         {
-            try
+            UserOperations userOperations = new UserOperations();
+            UserDTO userDto = userOperations.GetUserByUserName(userName);
+
+            bool result = userOperations.UpdateUser(userDto);
+
+            if (result)
             {
-                return RedirectToAction(nameof(Index));
+                UserModel userModel = new UserModel();
+                userModel.UserId = userDto.UserId;
+                userModel.UserName = userName;
+                userModel.Password = userDto.Password;
+                userModel.IsActive = userDto.IsActive;
+                userModel.RoleName = userDto.RoleName;
+                userModel.FirstName = userDto.FirstName;
+                userModel.LastName = userDto.LastName;
+                userModel.Email = userDto.Email;
+
+                return View(userModel);
             }
-            catch
+            else
             {
                 return View();
             }
         }
 
-        // GET: UserController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: UserController/Delete/5
+        // POST: UserController/UpdateUser/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult UpdateUser(int userId, UserModel model)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                UserOperations userOperations = new UserOperations();
+                // UserDTO userDto = userOperations.GetUserById(userId);
+
+                UserDTO userDto = new UserDTO(model.UserName, model.Password, model.IsActive, model.RoleName, model.FirstName, model.LastName, model.Email, model.UserId);
+
+                userOperations.UpdateUser(userDto);
+
+                return RedirectToAction("GetUsers");
             }
-            catch
+            catch (Exception ex)
             {
                 return View();
             }
+
         }
     }
 }

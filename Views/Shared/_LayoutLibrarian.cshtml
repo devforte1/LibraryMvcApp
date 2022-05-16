@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - My Virtual Cubby-Base</title
-        <h1>My Virtual Cubby-Base</h1>
+    <title>@ViewData["Title"] - My Virtual Cubby-Librarian</title>
+    <h1>My Virtual Cubby-Librarian</h1>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
@@ -26,11 +26,14 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="Index">Register</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Media" asp-action="GetInventory">Inventory Management</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Index">Log In</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Index">Profile</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Logout">Log Out</a>
+                        </li>                       
                     </ul>
                 </div>
             </div>

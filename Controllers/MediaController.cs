@@ -25,14 +25,20 @@ namespace LibraryMvcApp.Controllers
 
         // GET: MediaController
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult GetInventory()
         {
+            //if (String.IsNullOrEmpty(HttpContext.Session.GetString("IsAuthenticated")))
+            //{
+            //    HttpContext.Session.SetString("IsAuthenticated", "false");
+            //}
+
             MediaOperations operations = new MediaOperations();
             List<MediaDTO> mediaDtoList = new List<MediaDTO>();
             List<MediaModel> mediaModels = new List<MediaModel>();
 
-
             mediaDtoList = operations.GetInventory();
+
+            ModelState.Clear();
 
             foreach (MediaDTO item in mediaDtoList)
             {
@@ -44,9 +50,132 @@ namespace LibraryMvcApp.Controllers
                 model.Name = item.Name;
                 mediaModels.Add(model);
             }
-            ViewBag.MediaInventory = mediaModels;
+  
+            return View(mediaModels);
+        }
+
+        [HttpPost]
+        public IActionResult SearchInventoryByName(InventorySearchByNameViewModel viewModel)
+        {
+            //if (String.IsNullOrEmpty(HttpContext.Session.GetString("IsAuthenticated")))
+            //{
+            //    HttpContext.Session.SetString("IsAuthenticated", "false");
+            //}
+
+            MediaOperations operations = new MediaOperations();
+            List<MediaDTO> mediaDtoList = new List<MediaDTO>();
+            List<MediaModel> mediaModels = new List<MediaModel>();
+
+
+            if (String.IsNullOrEmpty(viewModel.SearchString))
+            {
+                // Retrieve the complete inventory list.
+                mediaDtoList = operations.GetInventory();
+            }
+            else
+            {
+                mediaDtoList = operations.SearchInventoryByName(viewModel.SearchString);
+            }
+
+            foreach (MediaDTO item in mediaDtoList)
+            {
+                MediaModel model = new MediaModel();
+                
+                model.MediaId = item.MediaId;
+                model.Type = item.Type;
+                model.Quantity = item.Quantity;
+                model.Name = item.Name;
+                mediaModels.Add(model);
+            }
+            //ViewBag.MediaInventory = mediaModels;
 
             return View();
+            // return RedirectToPage("~/SearchResult");
+            // return RedirectToAction("Index");
+            // return RedirectToAction("Index","Media");
+        }
+
+        // GET: Media/AddMediaItem
+        [HttpGet]
+        public IActionResult AddInventoryItem()
+        {
+            return View();
+        }
+
+        // POST: Media/AddMediaItem
+        [HttpPost]
+        public ActionResult AddInventoryItem(MediaModel item)
+        {
+            {
+                try
+                {
+                    if (ModelState.IsValid)
+                    {
+                        MediaOperations mediaOperations = new MediaOperations();
+
+                        MediaDTO itemDto = new MediaDTO(item.Quantity, item.Type, item.Name, item.MediaId);
+                        
+                        if (mediaOperations.AddInventoryItem(itemDto))
+                        {
+                            ViewBag.Message = "Media item added successfully";
+                        }
+                    }
+
+                    return View();
+                }
+                catch (Exception ex)
+                {
+                    // TODO: Handle Controller Exceptions here ?
+                    return View();
+                }
+            }
+
+            return View();
+        }
+
+        // GET: Media/EditMediaItem/<id>
+        [HttpGet]
+        public IActionResult UpdateInventoryItem(int id)
+        {
+            MediaOperations mediaOperations = new MediaOperations();
+            MediaDTO mediaDto = mediaOperations.GetInventory().Find(item => item.MediaId == id);
+
+            bool result = mediaOperations.UpdateInventoryItem(mediaDto);
+
+            if (result)
+            {
+                MediaModel mediaModel = new MediaModel();
+                mediaModel.MediaId = mediaDto.MediaId;
+                mediaModel.Quantity = mediaDto.Quantity;
+                mediaModel.Type = mediaDto.Type;
+                mediaModel.Name = mediaDto.Name;
+
+                return View(mediaModel);
+                // return View(mediaOperations.GetInventory().Find(mediaModel => model.MediaId == id));
+            }
+            else
+            {
+                return View();
+            }
+        }
+
+        // POST: Media/UpdateInventoryItem/<id>
+        [HttpPost]
+        public IActionResult UpdateInventoryItem(int id, MediaModel model)
+        {
+            try
+            {
+                MediaOperations mediaOperations = new MediaOperations();
+                MediaDTO mediaDto = new MediaDTO(model.Quantity,model.Type,model.Name,model.MediaId);
+
+                mediaOperations.UpdateInventoryItem(mediaDto);
+
+                return RedirectToAction("GetInventory");
+            }
+            catch(Exception ex)
+            {
+                return View();
+            }
         }
     }
 }

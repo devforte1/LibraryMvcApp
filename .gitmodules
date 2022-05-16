@@ -1,0 +1,3 @@
+[submodule "External/LibraryDAL"]
+	path = External/LibraryDAL
+	url = https://github.com/devforte1/LibraryDAL

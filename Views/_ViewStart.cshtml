@@ -1,3 +1,33 @@
 ﻿@{
-    Layout = "_Layout";
+
+    LibraryBLL.UserDTO userResult = LibraryCommon.SessionHelper.GetObjectFromJson<LibraryBLL.UserDTO>(Context.Session, "user");
+    if (userResult is not null)
+    {
+        ViewBag.CurrentUser = userResult;
+
+        switch (userResult.RoleName)
+        {
+            case "Guest":
+                Layout = "_LayoutGuest";
+                break;
+            case "Patron":
+                Layout = "_LayoutPatron";
+                break;
+            case "Librarian":
+                Layout = "_LayoutLibrarian";
+                break;
+            case "Administrator":
+                Layout = "_LayoutAdministrator";
+                break;
+            default:
+                Layout = "_LayoutBase";
+                break;
+        }
+    }
+    else
+    {
+        Layout = "_LayoutGuest";
+    }
+
+    
 }

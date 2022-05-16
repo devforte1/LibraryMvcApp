@@ -1,7 +1,30 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+@{
+    @model LibraryMvcApp.Models.InventorySearchByNameViewModel
+}
 
 <div class="container-sm">
-    <h1 class="display-4">Howdy There. Feel free to look around.</h1>
+    <h1 class="display-4">Howdy There and Welcome! <br /><br />Feel free to look around.<br></h1>
+</div>
+<div class="container-sm">
+    @using (Html.BeginForm("SearchByName","Media"))
+    {
+        <form>
+            <div class="form-group">
+                @* @Html.LabelFor(model => model.SearchString)<text>Search for any part of the item title:</text> *@
+               <p>
+                   <br><br>
+                   <input type="submit" value="Search for an item by any part of the title:" class="btn btn-primary"/>
+                   @Html.TextBoxFor(model => model.SearchString)
+                </p>
+                
+            </div>
+
+            <div>
+                
+            </div>
+        </form>
+    }
 </div>

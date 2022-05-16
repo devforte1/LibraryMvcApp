@@ -28,14 +28,30 @@
     {
         <form>
             <div class="form-group">
-                <label for="username">User Name</label>
-                @Html.TextBoxFor(model => model.UserName, new { @class="form-control", @placeholder="Enter a User Name:"})
+                @Html.LabelFor(model => model.UserName)<text>:</text>
+                @Html.TextBoxFor(model => model.UserName, new { @class="form-control", @placeholder="Enter a user name:"})
                 @Html.ValidationMessageFor(model => model.UserName, "", new {@class = "alert-danger"})
             </div>
             <div class="form-group">
-                <label for="password">User Name</label>
-                @Html.TextBoxFor(model => model.Password, new { @class="form-control", @placeholder="Enter a Password:"})
+                @Html.LabelFor(model => model.Password)<text>:</text>
+                @Html.PasswordFor(model => model.Password, new { @class="form-control", @placeholder="Enter a password:"})
                 @Html.ValidationMessageFor(model => model.Password, "", new {@class = "alert-danger"})
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.FirstName)<text>:</text>
+                @Html.TextBoxFor(model => model.FirstName, new { @class="form-control", @placeholder="Enter your first name:"})
+                @Html.ValidationMessageFor(model => model.FirstName, "", new {@class = "alert-danger"})
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.LastName)<text>:</text>
+                @Html.TextBoxFor(model => model.LastName, new { @class="form-control", @placeholder="Enter your last name:"})
+                @Html.ValidationMessageFor(model => model.LastName, "", new {@class = "alert-danger"})
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Email)<text>:</text>
+                @Html.TextBoxFor(model => model.Email, new { @class="form-control", @placeholder="Enter your email address:"})
+                @Html.ValidationMessageFor(model => model.Email, "", new {@class = "alert-danger"})
             </div>
 
             <div>

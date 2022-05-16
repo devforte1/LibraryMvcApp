@@ -27,6 +27,11 @@ namespace LibraryMvcApp.Controllers
 
         public IActionResult Index()
         {
+            if (String.IsNullOrEmpty(HttpContext.Session.GetString("IsAuthenticated")))
+            {
+                HttpContext.Session.SetString("IsAuthenticated", "false");
+            }
+
             RoleOperations operations = new RoleOperations();
             List<RoleDTO> roleDtoList = new List<RoleDTO>();
             List<RoleModel> roleModels = new List<RoleModel>();
