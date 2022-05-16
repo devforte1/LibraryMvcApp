@@ -39,13 +39,6 @@ namespace LibraryMvcApp.Controllers
         [HttpPost]
         public IActionResult Index(LoginViewModel model)
         {
-
-
-            //if (String.IsNullOrEmpty(HttpContext.Session.GetString("IsAuthenticated")))
-            //{
-            //    HttpContext.Session.SetString("IsAuthenticated", "false");
-            //}
-
             // If the user already has a current authenticated session then redirect to the landing page.
             LibraryBLL.UserDTO userResult = LibraryCommon.SessionHelper.GetObjectFromJson<LibraryBLL.UserDTO>(HttpContext.Session, "user");
             if(userResult is not null)

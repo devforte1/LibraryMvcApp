@@ -19,13 +19,6 @@ namespace LibraryMvcApp.Controllers
     public class RegistrationController : Controller
     {
         private readonly ILogger<RegistrationController> _logger;
-        //private enum _role
-        //{
-        //    Guest =17,
-        //    Administrator = 18,
-        //    Librarian = 19,
-        //    Patron =20
-        //}
 
         public RegistrationController(ILogger<RegistrationController> logger)
         {

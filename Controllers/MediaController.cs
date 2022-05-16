@@ -27,11 +27,6 @@ namespace LibraryMvcApp.Controllers
         [HttpGet]
         public IActionResult GetInventory()
         {
-            //if (String.IsNullOrEmpty(HttpContext.Session.GetString("IsAuthenticated")))
-            //{
-            //    HttpContext.Session.SetString("IsAuthenticated", "false");
-            //}
-
             MediaOperations operations = new MediaOperations();
             List<MediaDTO> mediaDtoList = new List<MediaDTO>();
             List<MediaModel> mediaModels = new List<MediaModel>();
@@ -137,6 +132,17 @@ namespace LibraryMvcApp.Controllers
         [HttpGet]
         public IActionResult UpdateInventoryItem(int id)
         {
+            LibraryBLL.UserDTO userResult = LibraryCommon.SessionHelper.GetObjectFromJson<LibraryBLL.UserDTO>(HttpContext.Session, "user");
+            if (userResult is not null)
+            {
+                ViewBag.CurrentUser = userResult;
+
+                if (!(userResult.RoleName == "Administrator")||(!(userResult.RoleName == "Librarian")))
+                {
+                    RedirectToAction("Index", "Home");
+                }
+            }
+
             MediaOperations mediaOperations = new MediaOperations();
             MediaDTO mediaDto = mediaOperations.GetInventory().Find(item => item.MediaId == id);
 
@@ -151,7 +157,6 @@ namespace LibraryMvcApp.Controllers
                 mediaModel.Name = mediaDto.Name;
 
                 return View(mediaModel);
-                // return View(mediaOperations.GetInventory().Find(mediaModel => model.MediaId == id));
             }
             else
             {
@@ -163,6 +168,17 @@ namespace LibraryMvcApp.Controllers
         [HttpPost]
         public IActionResult UpdateInventoryItem(int id, MediaModel model)
         {
+            LibraryBLL.UserDTO userResult = LibraryCommon.SessionHelper.GetObjectFromJson<LibraryBLL.UserDTO>(HttpContext.Session, "user");
+            if (userResult is not null)
+            {
+                ViewBag.CurrentUser = userResult;
+
+                if (!(userResult.RoleName == "Administrator") || (!(userResult.RoleName == "Librarian")))
+                {
+                    RedirectToAction("Index", "Home");
+                }
+            }
+
             try
             {
                 MediaOperations mediaOperations = new MediaOperations();

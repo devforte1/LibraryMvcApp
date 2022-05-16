@@ -20,6 +20,17 @@ namespace LibraryMvcApp.Controllers
         [Route("UserMedia/GetUserMediaItems/{userId}")]
         public IActionResult GetUserMediaItems(int userId)
         {
+            LibraryBLL.UserDTO userResult = LibraryCommon.SessionHelper.GetObjectFromJson<LibraryBLL.UserDTO>(HttpContext.Session, "user");
+            if (userResult is not null)
+            {
+                ViewBag.CurrentUser = userResult;
+
+                if (!(userResult.RoleName == "Administrator") || (!(userResult.UserId != userId)))
+                {
+                    RedirectToAction("Index", "Home");
+                }
+            }
+
             UserMediaOperations userMediaOperations = new UserMediaOperations();
             ModelState.Clear();
 

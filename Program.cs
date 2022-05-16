@@ -9,10 +9,6 @@ using System.Threading.Tasks;
 
 namespace LibraryMvcApp
 {
-
-    // TODO: Add authentication test for CRUD Controller Actions.
-    // TODO: Create media inventory management CRUD capabilities for Librarian, Administrator.
-    // TODO: Create checkin/checkout Dashoboard capability for Patron users.
     public class Program
     {
         public static void Main(string[] args)

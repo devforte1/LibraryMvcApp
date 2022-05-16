@@ -20,11 +20,16 @@ namespace LibraryMvcApp.Controllers
         [HttpGet]
         public ActionResult GetUsers()
         {
+            LibraryBLL.UserDTO userResult = LibraryCommon.SessionHelper.GetObjectFromJson<LibraryBLL.UserDTO>(HttpContext.Session, "user");
+            if (userResult is not null)
+            {
+                ViewBag.CurrentUser = userResult;
 
-            //if (String.IsNullOrEmpty(HttpContext.Session.GetString("IsAuthenticated")))
-            //{
-            //    HttpContext.Session.SetString("IsAuthenticated", "false");
-            //}
+                if (!(userResult.RoleName == "Administrator"))
+                {
+                    RedirectToAction("Index", "Home");
+                }
+            }
 
             UserOperations userOperations = new UserOperations();
             List<UserDTO> userDtoList = new List<UserDTO>();
@@ -83,7 +88,6 @@ namespace LibraryMvcApp.Controllers
                 UserDTO user = new UserDTO(model.UserName, model.Password, model.IsActive.ToString(), model.RoleName, model.FirstName, model.LastName, model.Email, model.UserId);
 
                 return View();
-                // return RedirectToPage("/Register");
             }
             else
             {
@@ -94,12 +98,23 @@ namespace LibraryMvcApp.Controllers
         // GET: UserController/UpdateUser/5
         public ActionResult UpdateUser(int id)
         {
+            LibraryBLL.UserDTO userResult = LibraryCommon.SessionHelper.GetObjectFromJson<LibraryBLL.UserDTO>(HttpContext.Session, "user");
+            if (userResult is not null)
+            {
+                ViewBag.CurrentUser = userResult;
+
+                if (!(userResult.RoleName == "Administrator"))
+                {
+                    RedirectToAction("Index", "Home");
+                }
+            }
+
             UserOperations userOperations = new UserOperations();
             UserDTO userDto = userOperations.GetUsers().Find(item => item.UserId == id);
 
-            //bool result = userOperations.UpdateUser(userDto);
+            bool result = userOperations.UpdateUser(userDto);
 
-            if (userDto is not null)
+            if (result)
             {
                 UserModel userModel = new UserModel();
                 userModel.UserId = userDto.UserId;
@@ -112,12 +127,6 @@ namespace LibraryMvcApp.Controllers
                 userModel.Email = userDto.Email;
 
                 return View(userModel);
-                //    // return View(mediaOperations.GetInventory().Find(mediaModel => model.MediaId == id));
-                //}
-                //else
-                //{
-                //    return View();
-                //}
             }
             else
             {
@@ -125,45 +134,26 @@ namespace LibraryMvcApp.Controllers
             }
         }
 
-        // POST: UserController/UpdateUser/<UserName>
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult UpdateUser(string userName)
-        {
-            UserOperations userOperations = new UserOperations();
-            UserDTO userDto = userOperations.GetUserByUserName(userName);
-
-            bool result = userOperations.UpdateUser(userDto);
-
-            if (result)
-            {
-                UserModel userModel = new UserModel();
-                userModel.UserId = userDto.UserId;
-                userModel.UserName = userName;
-                userModel.Password = userDto.Password;
-                userModel.IsActive = userDto.IsActive;
-                userModel.RoleName = userDto.RoleName;
-                userModel.FirstName = userDto.FirstName;
-                userModel.LastName = userDto.LastName;
-                userModel.Email = userDto.Email;
-
-                return View(userModel);
-            }
-            else
-            {
-                return View();
-            }
-        }
 
         // POST: UserController/UpdateUser/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult UpdateUser(int userId, UserModel model)
         {
+            LibraryBLL.UserDTO userResult = LibraryCommon.SessionHelper.GetObjectFromJson<LibraryBLL.UserDTO>(HttpContext.Session, "user");
+            if (userResult is not null)
+            {
+                ViewBag.CurrentUser = userResult;
+
+                if (!(userResult.RoleName == "Administrator"))
+                {
+                    RedirectToAction("Index", "Home");
+                }
+            }
+
             try
             {
                 UserOperations userOperations = new UserOperations();
-                // UserDTO userDto = userOperations.GetUserById(userId);
 
                 UserDTO userDto = new UserDTO(model.UserName, model.Password, model.IsActive, model.RoleName, model.FirstName, model.LastName, model.Email, model.UserId);
 

@@ -27,9 +27,15 @@ namespace LibraryMvcApp.Controllers
 
         public IActionResult Index()
         {
-            if (String.IsNullOrEmpty(HttpContext.Session.GetString("IsAuthenticated")))
+            LibraryBLL.UserDTO userResult = LibraryCommon.SessionHelper.GetObjectFromJson<LibraryBLL.UserDTO>(HttpContext.Session, "user");
+            if (userResult is not null)
             {
-                HttpContext.Session.SetString("IsAuthenticated", "false");
+                ViewBag.CurrentUser = userResult;
+
+                if (!(userResult.RoleName == "Administrator"))
+                {
+                    RedirectToAction("Index", "Home");
+                }
             }
 
             RoleOperations operations = new RoleOperations();

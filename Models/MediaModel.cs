@@ -10,18 +10,6 @@ namespace LibraryMvcApp.Models
         private string _name;
         private int _quantity;
 
-        //public MediaModel(int mediaId, int quantity, string mediaType, string name)
-        //{
-        //    _mediaId = mediaId;
-        //    _quantity = quantity;
-        //    _mediaType = mediaType;
-        //    _name = name;
-        //}
-
-
-        /*
-            [Required(ErrorMessage = "MediaId is required.")]
-        */
         public int MediaId { get => _mediaId; set => _mediaId = value; }
 
         [Required(ErrorMessage ="Quantity is required.")]
