@@ -23,6 +23,7 @@ namespace LibraryMvcApp.Controllers
     {
         // GET: LoginController
         [HttpGet]
+        // [ValidateAntiForgeryToken]
         public IActionResult Index()
         {
             // If the user already has a current authenticated session then redirect to the landing page.
@@ -37,6 +38,7 @@ namespace LibraryMvcApp.Controllers
 
         // POST: LoginController/Index
         [HttpPost]
+        // [ValidateAntiForgeryToken]
         public IActionResult Index(LoginViewModel model)
         {
             // If the user already has a current authenticated session then redirect to the landing page.
@@ -57,6 +59,7 @@ namespace LibraryMvcApp.Controllers
                     UserOperations db = new UserOperations();
                     UserDTO user = db.GetUserByUserName(model.UserName);
                     SessionHelper.SetObjectAsJson(HttpContext.Session, "user", user);
+                    SessionHelper.SetObjectAsJson(HttpContext.Session, "password",model.Password);
                     HttpContext.Session.SetString("IsAuthenticated", "true");
 
                     ViewBag.Message = $"Welcome, {user.RoleName} '{model.UserName}'.";
@@ -71,6 +74,10 @@ namespace LibraryMvcApp.Controllers
 
         public IActionResult Logout()
         {
+            SessionHelper.SetObjectAsJson(HttpContext.Session, "user", null);
+            ViewBag.CurrentUser = null;
+            ViewBag.IsAuthenticated = "false";
+
             HttpContext.Session.Clear();
             HttpContext.SignOutAsync();
 

@@ -24,7 +24,7 @@ namespace LibraryMvcApp.Controllers
             _logger = logger;
         }
 
-
+        [ValidateAntiForgeryToken]
         public IActionResult Index()
         {
             LibraryBLL.UserDTO userResult = LibraryCommon.SessionHelper.GetObjectFromJson<LibraryBLL.UserDTO>(HttpContext.Session, "user");

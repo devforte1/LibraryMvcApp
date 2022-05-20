@@ -19,9 +19,11 @@ namespace LibraryMvcApp.Models
         public int UserId { get => _userId; set => _userId = value; }
 
         [Required(ErrorMessage = "UserName is required.")]
+        [StringLength(50, MinimumLength = 6, ErrorMessage = "UserNamehould be between 6 and 50 characters")]
         public string UserName { get => _userName; set => _userName = value; }
 
         [Required(ErrorMessage = "Password is required.")]
+        [StringLength(50, MinimumLength = 6, ErrorMessage = "Password should be between 6 and 50 characters")]
         [DataType(DataType.Password)]
         public string Password { get => _password; set => _password = value; }
 

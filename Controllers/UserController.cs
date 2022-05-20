@@ -14,21 +14,20 @@ using LibraryMvcApp.Models;
 
 namespace LibraryMvcApp.Controllers
 {
+    
     public class UserController : Controller
     {
         // GET: UserController
         [HttpGet]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public ActionResult GetUsers()
         {
             LibraryBLL.UserDTO userResult = LibraryCommon.SessionHelper.GetObjectFromJson<LibraryBLL.UserDTO>(HttpContext.Session, "user");
-            if (userResult is not null)
+            // if (userResult is not null)
+            ViewBag.IsAuthenticated = "false";
+            if (ViewBag.IsAuthenticated == "false")
             {
-                ViewBag.CurrentUser = userResult;
-
-                if (!(userResult.RoleName == "Administrator"))
-                {
-                    RedirectToAction("Index", "Home");
-                }
+                RedirectToAction("Index", "Home");
             }
 
             UserOperations userOperations = new UserOperations();
@@ -45,7 +44,6 @@ namespace LibraryMvcApp.Controllers
 
                 model.UserId = item.UserId;
                 model.UserName = item.UserName;
-                model.Password = item.Password;
                 model.IsActive = item.IsActive;
                 model.RoleName = item.RoleName;
                 model.FirstName = item.FirstName;
@@ -57,13 +55,52 @@ namespace LibraryMvcApp.Controllers
             return View(userModels);
         }
 
+        // GET: UserController
+        [HttpGet]
+        // [ValidateAntiForgeryToken]
+        public ActionResult GetUserProfile(int id)
+        {
+            LibraryBLL.UserDTO userResult = LibraryCommon.SessionHelper.GetObjectFromJson<LibraryBLL.UserDTO>(HttpContext.Session, "user");
+            if (userResult is not null)
+            {
+                ViewBag.CurrentUser = userResult;
+
+                if ((!(userResult.RoleName == "Patron")) && (!(userResult.UserId == id)))
+                {
+                    RedirectToAction("Index", "Home");
+                }
+            }
+
+            UserOperations userOperations = new UserOperations();
+            // UserDTO userDto = new UserDTO();
+            UserModel userModel = new UserModel();
+
+            UserDTO userDto = userOperations.GetUserProfile(id);
+
+            ModelState.Clear();
+
+                userModel.UserId = userDto.UserId;
+                userModel.UserName = userDto.UserName;
+                userModel.IsActive = userDto.IsActive;
+                userModel.RoleName = userDto.RoleName;
+                userModel.FirstName = userDto.FirstName;
+                userModel.LastName = userDto.LastName;
+                userModel.Email = userDto.Email;
+
+            return View(userModel);
+        }
+
         // GET: UserController/Details/5
+        [HttpGet]
+        // [ValidateAntiForgeryToken]
         public ActionResult Details(int id)
         {
             return View();
         }
 
         // GET: UserController/Create
+        [HttpGet]
+        // [ValidateAntiForgeryToken]
         public ActionResult Create()
         {
             return View();
@@ -109,6 +146,11 @@ namespace LibraryMvcApp.Controllers
                 }
             }
 
+            RoleOperations roleOperations = new RoleOperations();
+            List<RoleDTO> roleDtoList = roleOperations.GetRoles();
+            SessionHelper.SetObjectAsJson(HttpContext.Session, "roles", roleDtoList);
+            ViewBag.RoleList = roleDtoList;
+            
             UserOperations userOperations = new UserOperations();
             UserDTO userDto = userOperations.GetUsers().Find(item => item.UserId == id);
 
@@ -119,7 +161,6 @@ namespace LibraryMvcApp.Controllers
                 UserModel userModel = new UserModel();
                 userModel.UserId = userDto.UserId;
                 userModel.UserName = userDto.UserName;
-                userModel.Password = userDto.Password;
                 userModel.IsActive = userDto.IsActive;
                 userModel.RoleName = userDto.RoleName;
                 userModel.FirstName = userDto.FirstName;
@@ -133,7 +174,6 @@ namespace LibraryMvcApp.Controllers
                 return View();
             }
         }
-
 
         // POST: UserController/UpdateUser/5
         [HttpPost]
@@ -165,6 +205,78 @@ namespace LibraryMvcApp.Controllers
             {
                 return View();
             }
+
+        }
+
+        // GET: UserController/UpdateUserProfile/5
+        [HttpGet]
+        // [ValidateAntiForgeryToken]
+        public ActionResult UpdateUserProfile(int id)
+        {
+            LibraryBLL.UserDTO userResult = LibraryCommon.SessionHelper.GetObjectFromJson<LibraryBLL.UserDTO>(HttpContext.Session, "user");
+            if (userResult is not null)
+            {
+                ViewBag.CurrentUser = userResult;
+
+                if ((!(userResult.RoleName == "Patron")) && (!(userResult.UserId == id)))
+                {
+                    RedirectToAction("Index", "Home");
+                }
+            }
+
+            UserOperations userOperations = new UserOperations();
+            UserDTO userDto = userOperations.GetUsers().Find(item => item.UserId == id);
+
+            bool result = userOperations.UpdateUserProfile(userDto);
+
+            if (result)
+            {
+                UserModel userModel = new UserModel();
+                userModel.UserId = userDto.UserId;
+                userModel.UserName = userDto.UserName;
+                userModel.IsActive = userDto.IsActive;
+                userModel.RoleName = userDto.RoleName;
+                userModel.FirstName = userDto.FirstName;
+                userModel.LastName = userDto.LastName;
+                userModel.Email = userDto.Email;
+
+                return View(userModel);
+            }
+            else
+            {
+                return View();
+            }
+        }
+
+        // POST: UserController/UpdateUserProfile/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult UpdateUserProfile(int userId, UserModel model)
+        {
+            LibraryBLL.UserDTO userResult = LibraryCommon.SessionHelper.GetObjectFromJson<LibraryBLL.UserDTO>(HttpContext.Session, "user");
+            ViewBag.CurrentUser = userResult;
+
+            if ((!(userResult.RoleName == "Patron")) || (!(userResult.UserId == userId)))
+            {
+                RedirectToAction("Index", "Home");
+            }
+
+            try
+            {
+                UserOperations userOperations = new UserOperations();
+
+                UserDTO userDto = new UserDTO(model.UserName, model.Password, model.IsActive, model.RoleName, model.FirstName, model.LastName, model.Email, model.UserId);
+
+                userOperations.UpdateUserProfile(userDto);
+
+                RedirectToAction("GetUserProfile", new { id = userResult.UserId });
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+
+            return View();
 
         }
     }

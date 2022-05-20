@@ -25,6 +25,7 @@ namespace LibraryMvcApp.Controllers
 
         // GET: MediaController
         [HttpGet]
+        // [ValidateAntiForgeryToken]
         public IActionResult GetInventory()
         {
             MediaOperations operations = new MediaOperations();
@@ -50,13 +51,9 @@ namespace LibraryMvcApp.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult SearchInventoryByName(InventorySearchByNameViewModel viewModel)
         {
-            //if (String.IsNullOrEmpty(HttpContext.Session.GetString("IsAuthenticated")))
-            //{
-            //    HttpContext.Session.SetString("IsAuthenticated", "false");
-            //}
-
             MediaOperations operations = new MediaOperations();
             List<MediaDTO> mediaDtoList = new List<MediaDTO>();
             List<MediaModel> mediaModels = new List<MediaModel>();
@@ -82,16 +79,14 @@ namespace LibraryMvcApp.Controllers
                 model.Name = item.Name;
                 mediaModels.Add(model);
             }
-            //ViewBag.MediaInventory = mediaModels;
+            ViewBag.MediaInventory = mediaModels;
 
             return View();
-            // return RedirectToPage("~/SearchResult");
-            // return RedirectToAction("Index");
-            // return RedirectToAction("Index","Media");
         }
 
         // GET: Media/AddMediaItem
         [HttpGet]
+        // [ValidateAntiForgeryToken]
         public IActionResult AddInventoryItem()
         {
             return View();
@@ -99,6 +94,7 @@ namespace LibraryMvcApp.Controllers
 
         // POST: Media/AddMediaItem
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult AddInventoryItem(MediaModel item)
         {
             {
@@ -130,6 +126,7 @@ namespace LibraryMvcApp.Controllers
 
         // GET: Media/EditMediaItem/<id>
         [HttpGet]
+        // [ValidateAntiForgeryToken]
         public IActionResult UpdateInventoryItem(int id)
         {
             LibraryBLL.UserDTO userResult = LibraryCommon.SessionHelper.GetObjectFromJson<LibraryBLL.UserDTO>(HttpContext.Session, "user");
@@ -166,6 +163,7 @@ namespace LibraryMvcApp.Controllers
 
         // POST: Media/UpdateInventoryItem/<id>
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult UpdateInventoryItem(int id, MediaModel model)
         {
             LibraryBLL.UserDTO userResult = LibraryCommon.SessionHelper.GetObjectFromJson<LibraryBLL.UserDTO>(HttpContext.Session, "user");

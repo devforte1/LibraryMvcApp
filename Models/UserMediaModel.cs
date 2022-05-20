@@ -5,7 +5,8 @@ namespace LibraryMvcApp.Models
 {
     public class UserMediaModel
     {
-        
+
+        private int _userMediaId;
         private int _userId;
         private int _mediaId;
         private string _mediaName;
@@ -14,6 +15,10 @@ namespace LibraryMvcApp.Models
         private string _checkInDate;
         private string _holdRequestDate;
 
+        [Display(Name = "UserMediaId")]
+        public int UserMediaId { get { return _userMediaId; } set { _userMediaId = value; } }
+
+        
         [Display(Name = "UserId")]
         public int UserId { get { return _userId; } set { _userId = value; } }
 

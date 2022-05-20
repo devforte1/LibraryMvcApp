@@ -1,9 +1,24 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+
 @model IEnumerable<LibraryMvcApp.Models.MediaModel>
 
-<p>@Html.ActionLink("Add Inventory Item", "AddInventoryItem")</p>
+@{
+    LibraryBLL.UserDTO userResult = LibraryCommon.SessionHelper.GetObjectFromJson<LibraryBLL.UserDTO>(Context.Session, "user");
+    ViewBag.CurrentUser = userResult;
+    switch (userResult.RoleName)
+    {
+        case "Administrator":
+            <p>@Html.ActionLink("Add Inventory Item", "AddInventoryItem")</p>
+            break;
+        case "Librarian":
+            <p>@Html.ActionLink("Add Inventory Item", "AddInventoryItem")</p>
+            break;
+        default:
+            break;
+    }
+}
 
 <table class="table">  
 <tr>  
@@ -12,6 +27,8 @@
     <th>@Html.DisplayNameFor(model => model.Name)</th>  
     <th></th>  
 </tr>  
+
+
   
 @foreach (var item in Model)  
 {
@@ -19,10 +36,28 @@
     <tr>
         <td>@Html.DisplayFor(modelItem => item.Quantity)</td>
         <td>@Html.DisplayFor(modelItem => item.Type)</td>  
-        <td>@Html.DisplayFor(modelItem => item.Name)</td>  
-        <td>@Html.ActionLink("Edit", "UpdateInventoryItem", new { id = item.MediaId }) |  
-            @Html.ActionLink("Delete", "DeleteInventoryItem", new { id = item.MediaId }, new { onclick = "return confirm('Confirm inventory item deletion.');" })  
-        </td>  
+        <td>@Html.DisplayFor(modelItem => item.Name)</td>
+            @{
+                if (userResult is not null)
+                {
+                    switch (userResult.RoleName)
+                    {
+                        case "Administrator":
+                            <td>@Html.ActionLink("Edit", "UpdateInventoryItem", new { id = item.MediaId }) |  
+                            @Html.ActionLink("Delete", "DeleteInventoryItem", new { id = item.MediaId }, new { onclick = "return confirm('Confirm inventory item deletion.');" })
+                            </td>
+                            break;
+                        case "Librarian":
+                            <td>@Html.ActionLink("Edit", "UpdateInventoryItem", new { id = item.MediaId }) |  
+                            @Html.ActionLink("Delete", "DeleteInventoryItem", new { id = item.MediaId }, new { onclick = "return confirm('Confirm inventory item deletion.');" })
+                            </td>
+                            break;
+                        default:
+                            break;
+                     }
+                 }
+             }
+ 
     </tr>  
 }  
 </table>
